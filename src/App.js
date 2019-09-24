@@ -12,18 +12,6 @@ class App extends Component {
     otherState: 'some other value',
     showPersons: false
   }
-  
-  switchNameHandler = (newName) => {
-    //console.log('Was clicked!')
-    //DON'T DO THIS: this.state.persons[0].name = 'Maximillian';
-    this.setState({
-      persons: [
-        { name: newName, age: 28 },
-        { name: 'Manu', age: 29 },
-        { name: 'Stephanie', age: 27 },
-      ]
-    })
-  }
 
   nameChangedHandler = (event) => {
     this.setState({
@@ -35,7 +23,15 @@ class App extends Component {
     })
   }
 
+  deletePerwsonHandler = (personIndex) => {
+    const persons = [...this.state.persons];
+    persons.splice(personIndex, 1);
+    this.setState({persons: persons})
+  }
+
   tooglePersonsHandler = () => {
+    const doesShow = this.state.showPersons;
+    this.setState({showPersons: !doesShow})
 
   }
   
@@ -48,26 +44,30 @@ class App extends Component {
       cursor: 'pointer'
     };
 
+    let persons = null;
+
+    if (this.state.showPersons) {
+      persons = (
+        <div>
+          {this.state.persons.map ((person, index) => {
+            return <Person
+              click={() => this.deletePerwsonHandler(index)}
+              name={person.name}
+              age={person.name}
+              key={index}/>
+          })}
+        </div>
+      )
+    }
+
     return (
      <div className="App">
-       <h1>Hi, I'm a React App</h1>
-       <p>This is really working!</p>
-       <button 
-        style={style}
-        onClick={this.togglePersonsHandler}>Switch Name</button>
-       <div>
-        <Person
-          name={this.state.persons[0].name} 
-          age={this.state.persons[0].age}/>
-        <Person 
-          name={this.state.persons[1].name} 
-          age={this.state.persons[1].age}
-          click={this.switchNameHandler.bind(this, 'Max!')}
-          changed={this.nameChangedHandler}>My Hobbies: Racing</Person>
-        <Person 
-          name={this.state.persons[2].name} 
-          age={this.state.persons[2].age}/>
-       </div>
+        <h1>Hi, I'm a React App</h1>
+        <p>This is really working!</p>
+        <button 
+          style={style}
+          onClick={this.tooglePersonsHandler}>Toogle Persons</button>
+        { persons }
      </div>
     );
     // return React.createElement('div',{className: 'App'}, React.createElement('h1',null , 'Does this work now?'));
